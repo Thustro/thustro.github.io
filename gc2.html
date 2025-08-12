@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="https://github.hubspot.com/odometer/themes/odometer-theme-minimal.css" />
 		<script src="https://github.hubspot.com/odometer/odometer.js"></script>
 		<script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
@@ -21,13 +21,11 @@ body {
     font-family: Lato, Arial, Helvetica, sans-serif;
     color: var(--fg-color, #fff)
 }
-
-
   
 </style>
 	</head>
 	<div id="count">
-		<p id="odometer" class="odometer" style="height: 600px; top: -560px; left:625px; font-size: 200px; margin: auto;"></p>
+		<p id="odometer" class="odometer" style="height: 600px; position: absolute; top: 40px; left:680px; font-size: 200px;"></p>
 		<p style="height: 0px; position: absolute; top: 440px; left:1175px; font-size: 50px">Clicks</p>
 		<p style="height: 0px; position: absolute; top: 100px; left:975px; font-size: 75px">Global Clicker 2</p>
 		<img src="ecosia.png" style="position: absolute; left:1535px; top: 0px; zoom: 75%" >
