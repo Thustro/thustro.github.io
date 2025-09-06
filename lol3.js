@@ -7,7 +7,7 @@ getData();
 
 async function getsubs(){
 
-	const urlCarry = "https://api-gc.galvindev.me.uk/clicks";
+	const urlCarry = "https://games.roproxy.com/v1/games?universeIds=6296446566";
 	const responseCarry = await fetch(urlCarry);
 	const dataCarry = await responseCarry.json();
 	const statsCarry = dataCarry.data[0].visits
@@ -21,7 +21,7 @@ var chart = null;
 var apiData = [];
 
 function getData() {
-	fetch("https://api-gc.galvindev.me.uk/clicks")
+	fetch("https://games.roproxy.com/v1/games?universeIds=6296446566")
 	.then(blob => blob.json())
     .then(data => {
       const visits = Math.round(data.data[0].visits);
@@ -48,7 +48,7 @@ async function charts(){
     }
   });
   
-const urlCarry = "https://api-gc.galvindev.me.uk/clicks";
+  const urlCarry = "https://games.roproxy.com/v1/games?universeIds=6296446566";
 const responseCarry = await fetch(urlCarry);
 const dataCarry = await responseCarry.json();
 const statsCarry = dataCarry.data[0].visits
@@ -105,7 +105,7 @@ Highcharts.chart('container', {
     name: 'Visits',
     data: apiData,
 	lineWidth: 5,
-    color: 'white', // or light gray
+    color: 'green', // or light gray
   }]
 }, function (ch) {
   chart = ch;

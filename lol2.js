@@ -4,6 +4,7 @@ setInterval(getData, 3000);
 getsubs();
 charts();
 getData();
+
 async function getsubs(){
 
 	const urlCarry = "https://games.roproxy.com/v1/games?universeIds=2251388500";
@@ -75,29 +76,25 @@ var formatTime = function(ms){
 Highcharts.chart('container', {
   chart: {
     backgroundColor: 'transparent',
-    type: 'line',
+    type: 'area',
     zoomType: 'x'
   },
   title: {
     text: ''
   },
   xAxis: {
-    type: 'datetime',
-    tickPixelInterval: 25
+    visible: false
   },
   yAxis: {
-    title: {
-      text: ''
-    },
-    type: 'linear'
+    visible: false
   },
   plotOptions: {
     series: {
         threshold: null,
-        fillOpacity: 0.25
+        fillOpacity: 0.1
     },
     area: {
-        fillOpacity: 0.25
+        fillOpacity: 0.1
     }
   },
   credits: {
@@ -108,7 +105,7 @@ Highcharts.chart('container', {
     name: 'Visits',
     data: apiData,
 	lineWidth: 5,
-    color: 'purple'
+    color: 'white', // or light gray
   }]
 }, function (ch) {
   chart = ch;
