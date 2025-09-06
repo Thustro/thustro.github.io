@@ -10,7 +10,7 @@ async function getsubs(){
 	const urlCarry = "https://api-gc.galvindev.me.uk/clicks";
 	const responseCarry = await fetch(urlCarry);
 	const dataCarry = await responseCarry.json();
-	const statsCarry = dataCarry.data[0].visits
+	const statsCarry = dataCarry.data[0].clicks
 	const rootCarry = document.getElementById('count');
 	const carry = document.getElementById('odometer');
 	const nodeCarry = odometer.innerHTML = statsCarry
@@ -24,18 +24,18 @@ function getData() {
 	fetch("https://api-gc.galvindev.me.uk/clicks")
 	.then(blob => blob.json())
     .then(data => {
-      const visits = Math.round(data.data[0].visits);
+      const clicks = Math.round(data.clicks);
 
-      apiData.push([Date.now(), visits]);
+      apiData.push([Date.now(), clicks]);
 
       if (chart) {
-        chart.series[0].setData(apiData);
+        chart.series.setData(apiData);
       }
       if (apiData.length > 8) {
         apiData.shift();
-        chart.series[0].setData(apiData);
+        chart.series.setData(apiData);
       } else {
-        chart.series[0].addPoint([Date.now(), visits]);
+        chart.series.addPoint([Date.now(), clicks]);
       }
     });
 }
@@ -51,7 +51,7 @@ async function charts(){
 const urlCarry = "https://api-gc.galvindev.me.uk/clicks";
 const responseCarry = await fetch(urlCarry);
 const dataCarry = await responseCarry.json();
-const statsCarry = dataCarry.data[0].visits
+const statsCarry = dataCarry.data[0].clicks
 	
 	
 var formatTime = function(ms){
@@ -102,7 +102,7 @@ Highcharts.chart('container', {
     href: 'https://thustro.github.io/',
   },
   series: [{
-    name: 'Visits',
+    name: 'Clicks',
     data: apiData,
 	lineWidth: 5,
     color: 'white', // or light gray

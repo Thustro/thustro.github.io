@@ -1,5 +1,5 @@
-setInterval(getsubs, 3000);
-setInterval(getData, 3000);
+setInterval(getsubs, 5000);
+setInterval(getData, 5000);
 
 getsubs();
 charts();
