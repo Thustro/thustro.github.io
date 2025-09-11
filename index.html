@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
+<style>
+@font-face {
+		font-family: "OCR B Letterpress M W01 Regular";
+		src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot");
+		src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot?#iefix")format("embedded-opentype"),
+		url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff2")format("woff2"),
+		url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff")format("woff"),
+		url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.ttf")format("truetype"),
+		url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.svg#OCR B Letterpress M W01 Regular")format("svg");
+	}
+	
+	body {
+	  background-color: var(--bg-color, #1a1a20);
+	}
+	
+	h1 {
+	  font-size: 40px;
+	  font-family: "OCR B Letterpress M W01 Regular";
+	  color: #FFFFFF;
+	}
+	
+	p {
+	  font-size: 20px;
+	  font-family: "OCR B Letterpress M W01 Regular";
+	  color: #FFFFFF;
+	}
+</style>
+
 <head>
-  <meta charset="UTF-8">
-  <title>Global Clicker</title>
+  <title>Norfolk's Stuff</title>
 </head>
+
 <body>
-  <h1>🌍 Global Clicker</h1>
-  <h2 id="count">Loading...</h2>
-  <button onclick="increment()">Click Me!</button>
-
-  <script>
-    const apiUrl = 'http://localhost:3000/clicks';
-
-    async function getClicks() {
-      const res = await fetch(apiUrl);
-      const data = await res.json();
-      document.getElementById('count').innerText = `Clicks: ${data.clicks}`;
-    }
-
-    async function increment() {
-      const res = await fetch(apiUrl, { method: 'POST' });
-      const data = await res.json();
-      document.getElementById('count').innerText = `Clicks: ${data.clicks}`;
-    }
-
-    // Load initial count
-    getClicks();
+  <!-- vanders is a disc*rd moderator 🤮🤮🤮🤮 -->
+	<meta name="title" content="norfolk's projects!" />
+	<meta name="description" content="a website where i will occasionally upload things to that are practical" />
+  <!-- norfolk mangoes -->
+  <h1>check out my stuff!</h1>
+  
+  <p><a href="https://thustro.github.io/tlf.html">Twisted Link Fixer</a></p>
+  <p><a href="https://thustro.github.io/twistedrandomizer.html">Twisted Randomizer</a></p>
+  <p><a href="https://thustro.github.io/twisted.html">Twisted Statistics</a></p>
+  <p><a href="https://thustro.github.io/twistedlegacy.html">Twisted Legacy Statistics</a></p>
+  <p><a href="https://thustro.github.io/route22.html">Route 22 Statistics</a></p>
+  <p><a href="https://thustro.github.io/gc2.html">Global Clicker 2 Statistics</a></p>
   </script>
 </body>
+
 </html>
