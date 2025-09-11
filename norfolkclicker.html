@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Clicker</title>
+</head>
+<body>
+  <h1>🌍 Global Clicker</h1>
+  <h2 id="count">Loading...</h2>
+  <button onclick="increment()">Click Me!</button>
+
+  <script>
+    const apiUrl = 'http://localhost:3000/clicks';
+
+    async function getClicks() {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      document.getElementById('count').innerText = `Clicks: ${data.clicks}`;
+    }
+
+    async function increment() {
+      const res = await fetch(apiUrl, { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('count').innerText = `Clicks: ${data.clicks}`;
+    }
+
+    // Load initial count
+    getClicks();
+  </script>
+</body>
+</html>
