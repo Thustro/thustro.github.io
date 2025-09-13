@@ -73,6 +73,50 @@ p.mangos2 {
   font-size: 50px;
 }
 
+.progress-card {
+  width: 90%; /* same as .stats-row */
+  margin: 0 auto; /* center it */
+  padding: 15px;
+  background-color: #1f1e1e;
+  border-radius: 10px;
+}
+
+.progress-label {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  width: 100%;
+  background-color: black;
+  border: 1px solid white;
+  position: relative;
+  height: 15px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  background-color: gray;
+  height: 100%;
+  width: 0%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+}
+
+
+.progress-remaining {
+  color: #ccc;
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+
 @media screen and (max-width: 900px) {
     p.odometer {
 		top: 5px; font-size: 125px;
@@ -142,6 +186,29 @@ img.pfp {
   color: #ccc;
 }
 
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.previous-milestone {
+  text-align: left;
+  flex: 1;
+}
+
+.next-milestone {
+  text-align: right;
+  flex: 1;
+}
+
+.current-visits {
+  text-align: center;
+  flex: 1;
+}
+
 
 </style>
 	</head>
@@ -186,5 +253,21 @@ img.pfp {
 	<div class="card2">
 		<div class="lol">
 			<div id="container" style="height: 800px;"></div>
-		</center>
+
+      </center>
+    <div class="progress-wrapper">
+      <div class="progress-header" style="text-align: center; font-weight: bold; margin-top: 10px;">Progress Bar</div>
+
+      <div class="progress-container">
+        <div class="progress-fill"></div>
+      </div>
+
+      <div class="progress-labels">
+        <div class="previous-milestone" style="text-align: left; font-weight: bold;"></div>
+        <div id="currentvisits" class="current-visits odometer"></div>
+        <div class="next-milestone" style="text-align: right; font-weight: bold;"></div>
+      </div>
+
+      <div class="remaining"></div>
+    </div>
 </html>
