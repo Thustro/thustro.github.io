@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Roblox Game Search</title>
+  <title id="title"></title>
   <style>
     body {
       background-color: var(--bg-color, #18181a);
@@ -19,13 +19,13 @@
   </style>
 </head>
 <body>
-
+<center>
 <h1>Search Roblox Games</h1>
 <input type="text" id="searchBox" placeholder="Enter game name..." />
 <button onclick="searchGames()">Search</button>
 
 <div class="results" id="results"></div>
-
+</center>
 <script>
   document.getElementById('searchButton').addEventListener('click', searchGames);
 
@@ -61,22 +61,25 @@
         return;
       }
 
-      // 🎮 Display all the games
       games.forEach(game => {
-        console.log("Game:", game);
         const name = game.name ?? "Unnamed";
         const universeId = game.universeId;
         const description = game.description ?? "";
-        const creator = game.creatorName ?? "Unknown";
         const playing = game.playerCount ?? 0;
 
         const div = document.createElement('div');
         div.className = 'game';
-        div.innerHTML = `
-          <strong>${name}</strong><br>
-          <em>by ${creator} — ${playing.toLocaleString()} playing</em><br>
-          <p>${description.substring(0, 150)}...</p>
-        `;
+
+        // Build innerHTML dynamically
+        let innerHTML = `<strong>${name}</strong><br>`;
+        innerHTML += `<em>${playing.toLocaleString()} playing</em><br>`;
+
+        if (description.trim().length > 0) {
+          innerHTML += `<p>${description.substring(0, 150)}...</p>`;
+        }
+
+        div.innerHTML = innerHTML;
+
         div.onclick = () => {
           if (universeId) {
             window.location.href = `game.html?universeId=${universeId}`;
@@ -84,8 +87,10 @@
             alert("No universe ID found for this game.");
           }
         };
+
         resultsContainer.appendChild(div);
       });
+
 
     } catch (err) {
       console.error("Fetch error:", err);
