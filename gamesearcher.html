@@ -4,13 +4,22 @@
   <meta charset="UTF-8">
   <title id="title"></title>
   <style>
+    @font-face {
+      font-family: "OCR B Letterpress M W01 Regular";
+      src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot");
+      src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot?#iefix")format("embedded-opentype"),
+      url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff2")format("woff2"),
+      url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff")format("woff"),
+      url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.ttf")format("truetype"),
+      url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.svg#OCR B Letterpress M W01 Regular")format("svg");
+	  }  
+
     body {
       background-color: var(--bg-color, #18181a);
-      font-family: Lato, Arial, Helvetica, sans-serif;
+      font-family: "OCR B Letterpress M W01 Regular";
       color: var(--fg-color, #fff)
     }
 
-    body { font-family: Arial, sans-serif; margin: 20px; }
     input { padding: 8px; width: 300px; }
     button { padding: 8px; }
     .results { margin-top: 20px; }
