@@ -47,10 +47,21 @@ async function getsubs() {
     const favorites = document.getElementById('statFavorites');
     favorites.textContent = favourites;
 
-    const nextMilestone = Math.ceil(statsCarry / 10000000) * 10000000;
-    const toGoal = Math.max(nextMilestone - statsCarry, 0);
+    function calculateNextGoal(n) {
+        if (n < 1_000_000) {
+            const digits = Math.floor(Math.log10(n));
+            const magnitude = Math.pow(10, digits);
+            return Math.ceil(n / magnitude) * magnitude;
+        } else {
+            return Math.ceil(n / 1_000_000) * 1_000_000;
+        }
+    }
+
+    const nextMilestone = calculateNextGoal(statsCarry);
+    const toGoal = nextMilestone - statsCarry;
+
     document.getElementById("toGoal").textContent = toGoal.toLocaleString();
-    document.getElementById("goalLabel").textContent = `To Goal (${(nextMilestone / 1_000_000).toFixed(0)}M)`;
+    document.getElementById("goalLabel").textContent = `To Goal (${nextMilestone.toLocaleString()})`;
 
     document.title = `${gameName} Live Statistics`;
 }
