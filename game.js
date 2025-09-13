@@ -47,7 +47,12 @@ async function getsubs() {
     const favorites = document.getElementById('statFavorites');
     favorites.textContent = favourites;
 
-    document.title = `${gameName} Live`;
+    const nextMilestone = Math.ceil(statsCarry / 10000000) * 10000000;
+    const toGoal = Math.max(nextMilestone - statsCarry, 0);
+    document.getElementById("toGoal").textContent = toGoal.toLocaleString();
+    document.getElementById("goalLabel").textContent = `To Goal (${(nextMilestone / 1_000_000).toFixed(0)}M)`;
+
+    document.title = `${gameName} Live Statistics`;
 }
 
 async function getvotes() {
