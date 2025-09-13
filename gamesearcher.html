@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Game Search</title>
+  <style>
+    body {
+      background-color: var(--bg-color, #18181a);
+      font-family: Lato, Arial, Helvetica, sans-serif;
+      color: var(--fg-color, #fff)
+    }
+
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input { padding: 8px; width: 300px; }
+    button { padding: 8px; }
+    .results { margin-top: 20px; }
+    .game { padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; cursor: pointer; }
+    .game:hover { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+<h1>Search Roblox Games</h1>
+<input type="text" id="searchBox" placeholder="Enter game name..." />
+<button onclick="searchGames()">Search</button>
+
+<div class="results" id="results"></div>
+
+<script>
+  document.getElementById('searchButton').addEventListener('click', searchGames);
+
+  async function searchGames() {
+    const query = document.getElementById('searchBox').value.trim();
+    if (!query) {
+      alert("Please enter a game name");
+      return;
+    }
+
+    const sessionId = (crypto.randomUUID && crypto.randomUUID()) || ("sess-" + Date.now());
+    const url = `https://apis.roproxy.com/search-api/omni-search?searchQuery=${encodeURIComponent(query)}&sessionId=${sessionId}&pageType=games`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = '';
+
+      let games = [];
+      if (Array.isArray(data.searchResults)) {
+        for (const group of data.searchResults) {
+          if (group.contentGroupType === "Game" && Array.isArray(group.contents)) {
+            games = games.concat(group.contents);
+          }
+        }
+      }
+
+      if (games.length === 0) {
+        resultsContainer.innerHTML = '<p>No games found.</p>';
+        return;
+      }
+
+      // 🎮 Display all the games
+      games.forEach(game => {
+        console.log("Game:", game);
+        const name = game.name ?? "Unnamed";
+        const universeId = game.universeId;
+        const description = game.description ?? "";
+        const creator = game.creatorName ?? "Unknown";
+        const playing = game.playerCount ?? 0;
+
+        const div = document.createElement('div');
+        div.className = 'game';
+        div.innerHTML = `
+          <strong>${name}</strong><br>
+          <em>by ${creator} — ${playing.toLocaleString()} playing</em><br>
+          <p>${description.substring(0, 150)}...</p>
+        `;
+        div.onclick = () => {
+          if (universeId) {
+            window.location.href = `game.html?universeId=${universeId}`;
+          } else {
+            alert("No universe ID found for this game.");
+          }
+        };
+        resultsContainer.appendChild(div);
+      });
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("Failed to fetch game results. Check console for details.");
+    }
+  }
+</script>
+</body>
+</html>
