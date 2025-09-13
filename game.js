@@ -47,7 +47,7 @@ async function getsubs() {
     const favorites = document.getElementById('statFavorites');
     favorites.textContent = favourites;
 
-    document.title = `${gameName} Live Statistics`;
+    document.title = `${gameName} Live`;
 }
 
 async function getvotes() {
