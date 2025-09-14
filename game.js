@@ -81,7 +81,7 @@ async function getsubs() {
     document.querySelector('.progress-fill').style.width = clampedProgress + '%';
     document.querySelector('.previous-milestone').textContent = formatNumber(previousMilestone);
     document.querySelector('.next-milestone').textContent = formatNumber(nextMilestone);
-    document.querySelector('.current-visits').textContent = formatNumber(currentVisits);
+    document.querySelector('.current-visits').textContent = formatNumber(statsCarry);
     document.querySelector('.remaining').textContent = `${formatNumber(remaining)} remaining`;
 
     updateProgressBar(statsCarry, nextMilestone)
@@ -205,4 +205,5 @@ async function charts() {
     }, function (ch) {
         chart = ch;
     });
+
 }
