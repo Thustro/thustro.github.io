@@ -47,22 +47,27 @@ async function getsubs() {
     const favorites = document.getElementById('statFavorites');
     favorites.textContent = favourites;
 
-    function calculateNextGoal(n) {
+    function calculateMilestones(n) {
+        let step;
         if (n < 1_000_000) {
             const digits = Math.floor(Math.log10(n));
-            const magnitude = Math.pow(10, digits);
-            return Math.ceil(n / magnitude) * magnitude;
+            step = Math.pow(10, digits);
         } else {
-            return Math.ceil(n / 1_000_000) * 1_000_000;
+            step = 1_000_000;
         }
+
+        const next = Math.ceil(n / step) * step;
+        const previous = next - step;
+
+        return { next, previous, step };
     }
 
-    const nextMilestone = calculateNextGoal(statsCarry);
+    const { next: nextMilestone, previous: previousMilestone, step: milestoneStep } = calculateMilestones(statsCarry);
     const toGoal = nextMilestone - statsCarry;
-    const previousMilestone = nextMilestone - 1_000_000;
     const progressPercent = ((statsCarry - previousMilestone) / (nextMilestone - previousMilestone)) * 100;
     const clampedProgress = Math.min(Math.max(progressPercent, 0), 100);
     const remaining = nextMilestone - statsCarry;
+
 
     document.getElementById("toGoal").textContent = toGoal.toLocaleString();
     document.getElementById("goalLabel").textContent = `To Goal (${nextMilestone.toLocaleString()})`;
