@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Compare Roblox Games</title>
+<style>
+  body {
+    background-color: #18181a;
+    color: #fff;
+    font-family: "OCR B Letterpress M W01 Regular", monospace, monospace;
+    margin: 1rem;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  .user-panel {
+    background-color: #222;
+    padding: 1rem;
+    width: 45%;
+    border-radius: 8px;
+  }
+  input[type="text"] {
+    width: 80%;
+    padding: 6px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    margin-right: 8px;
+  }
+  button {
+    padding: 6px 12px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .results {
+    margin-top: 1rem;
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #1a1a1a;
+  }
+  .game {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+  }
+  .game:hover {
+    background-color: #333;
+  }
+  .game.selected {
+    background-color: #0f74f9;
+    color: #fff;
+  }
+  .game-name {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .game-playing {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.85rem;
+  }
+  .game-description {
+    font-size: 0.85rem;
+    color: #bbb;
+    max-height: 2.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .selected-game {
+    margin-top: 10px;
+    padding: 10px;
+    background: #111;
+    border-radius: 5px;
+    min-height: 70px;
+    font-style: italic;
+  }
+  .compare-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="user-panel" id="user1">
+      <h2>Game 1</h2>
+      <div>
+        <input type="text" placeholder="Search game..." />
+        <button>Search</button>
+      </div>
+      <div class="results"></div>
+      <div class="selected-game">No game selected</div>
+    </div>
+    <div class="user-panel" id="user2">
+      <h2>Game 2</h2>
+      <div>
+        <input type="text" placeholder="Search game..." />
+        <button>Search</button>
+      </div>
+      <div class="results"></div>
+      <div class="selected-game">No game selected</div>
+    </div>
+  </div>
+
+  <div class="compare-container">
+    <button id="compareBtn" disabled>Compare Selected Games</button>
+  </div>
+
+<script>
+  // Each user panel behavior is similar, so wrap into a class to reuse
+  class UserPanel {
+    constructor(containerId) {
+      this.container = document.getElementById(containerId);
+      this.input = this.container.querySelector("input[type=text]");
+      this.searchBtn = this.container.querySelector("button");
+      this.resultsDiv = this.container.querySelector(".results");
+      this.selectedDiv = this.container.querySelector(".selected-game");
+      this.selectedGame = null;
+
+      this.searchBtn.addEventListener("click", () => this.searchGames());
+      this.input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") this.searchGames();
+      });
+    }
+
+    async searchGames() {
+      const query = this.input.value.trim();
+      if (!query) {
+        alert("Please enter a game name");
+        return;
+      }
+      this.resultsDiv.innerHTML = "Loading...";
+      this.selectedGame = null;
+      this.updateSelected();
+      const sessionId = (crypto.randomUUID && crypto.randomUUID()) || ("sess-" + Date.now());
+      const url = `https://apis.roproxy.com/search-api/omni-search?searchQuery=${encodeURIComponent(query)}&sessionId=${sessionId}&pageType=games`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        this.resultsDiv.innerHTML = "";
+
+        let games = [];
+        if (Array.isArray(data.searchResults)) {
+          for (const group of data.searchResults) {
+            if (group.contentGroupType === "Game" && Array.isArray(group.contents)) {
+              games = games.concat(group.contents);
+            }
+          }
+        }
+
+        if (games.length === 0) {
+          this.resultsDiv.innerHTML = "<p>No games found.</p>";
+          return;
+        }
+
+        games.forEach((game) => {
+          const gameDiv = document.createElement("div");
+          gameDiv.className = "game";
+          gameDiv.innerHTML = `
+            <div class="game-name">${game.name}</div>
+            <div class="game-playing">${game.playerCount.toLocaleString()} playing</div>
+            <div class="game-description">${(game.description || "").substring(0, 150)}</div>
+          `;
+          gameDiv.addEventListener("click", () => {
+            this.selectedGame = game;
+            this.updateSelected();
+            updateCompareButton();
+            // Highlight selection
+            this.highlightSelected(game.universeId);
+          });
+          this.resultsDiv.appendChild(gameDiv);
+        });
+      } catch (err) {
+        console.error(err);
+        this.resultsDiv.innerHTML = "<p>Error loading games.</p>";
+      }
+    }
+
+    updateSelected() {
+      if (this.selectedGame) {
+        this.selectedDiv.innerHTML = `<strong>${this.selectedGame.name}</strong> — ${this.selectedGame.playerCount.toLocaleString()} playing`;
+        this.selectedDiv.style.fontStyle = "normal";
+      } else {
+        this.selectedDiv.textContent = "No game selected";
+        this.selectedDiv.style.fontStyle = "italic";
+      }
+      this.highlightSelected(this.selectedGame ? this.selectedGame.universeId : null);
+    }
+
+    highlightSelected(universeId) {
+      // Clear all highlights
+      this.resultsDiv.querySelectorAll(".game").forEach(div => {
+        div.classList.toggle("selected", div.querySelector(".game-name").textContent === (this.selectedGame ? this.selectedGame.name : ""));
+      });
+    }
+  }
+
+  const user1 = new UserPanel("user1");
+  const user2 = new UserPanel("user2");
+
+  const compareBtn = document.getElementById("compareBtn");
+
+  function updateCompareButton() {
+    compareBtn.disabled = !(user1.selectedGame && user2.selectedGame);
+  }
+
+  compareBtn.addEventListener("click", () => {
+    if (!(user1.selectedGame && user2.selectedGame)) {
+      alert("Please select a game for both users.");
+      return;
+    }
+    const url = `compare.html?game1=${user1.selectedGame.universeId}&game2=${user2.selectedGame.universeId}`;
+    window.location.href = url;
+  });
+</script>
+</body>
+</html>

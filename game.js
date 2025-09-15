@@ -206,4 +206,5 @@ async function charts() {
         chart = ch;
     });
 
+
 }

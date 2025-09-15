@@ -1,6 +1,5 @@
 <html>
 	<head>
-	<title>Twisted Live Statistics</title>
   <link rel="icon" type="image/x-icon" href="norfolkcounts.png">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="https://github.hubspot.com/odometer/themes/odometer-theme-minimal.css" />
@@ -27,6 +26,9 @@
 body {
     background-color: var(--bg-color, #18181a);
     font-family: Lato, Arial, Helvetica, sans-serif;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
     color: var(--fg-color, #fff)
 }
 
@@ -209,11 +211,61 @@ img.pfp {
   flex: 1;
 }
 
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000;
+  padding: 15px 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  margin-right: 8px;
+  color: white;
+}
+
+.site-name {
+  font-weight: bold;
+  color: white;
+}
+
+.topbar-right a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  transition: color 0.3s;
+}
+
+.topbar-right a:hover {
+  color: #999;
+}
+
+
 
 </style>
 	</head>
 	<center>
 	<body>
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="norfolkcounts.png" alt="Logo" style="height: 20px; margin-right: 8px;">
+      <span class="site-name">norfolkcounts</span>
+    </div>
+    <div class="topbar-right">
+      <a href="norfolkcounts.html">Home</a>
+    </div>
+  </div>
+
+
 	<div class="card">
 		<img id="gameIcon" class="pfp">
 		<p id="name" class="mangos">Loading...</p>
@@ -271,5 +323,6 @@ img.pfp {
       <div class="remaining" style="margin-top: 5px;"></div>
       </center>
     </div>
+
 
 </html>
