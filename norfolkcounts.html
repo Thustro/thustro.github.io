@@ -102,6 +102,18 @@ p.mangos {
   background-color: #272727;
 }
 
+.cards-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* space between cards */
+  margin-top: 40px;
+}
+
+.card {
+  width: 750px; /* smaller width so two fit comfortably */
+  margin: 0;    /* remove margin: 0 auto; so they don't stack */
+}
+
 </style>
 	</head>
 	<center>
@@ -116,10 +128,18 @@ p.mangos {
     </div>
   </div>
   <p class="mangos">welcome to my livecounts website tool ✌</p>
+  <div class="cards-container">
   <div class="card">
     <img src="robloxlogo.png" style="height: 120px; display: block; margin: 0 auto 20px;">
     <p class="mangos">Roblox Game Statistics</p>
     <button class="action-btn" onclick="window.location.href='gamesearcher.html'">Roblox Game Statistics</button>
     <button class="action-btn" onclick="window.location.href='comparesearcher.html'">Compare Roblox Game Statistics</button>
   </div>
+
+  <div class="card">
+    <img src="blueskylogo.png" style="height: 120px; display: block; margin: 0 auto 20px;">
+    <p class="mangos">Bluesky User Statistics</p>
+    <button class="action-btn" onclick="window.location.href='blueskysearcher.html'">Bluesky User Statistics</button>
+  </div>
+</div>
 </html>
