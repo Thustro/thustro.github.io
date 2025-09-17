@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search YouTube Channels</title>
+  <style>
+    @font-face {
+      font-family: "OCR B Letterpress M W01 Regular";
+      src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot");
+      src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot?#iefix") format("embedded-opentype"),
+           url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff2") format("woff2"),
+           url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff") format("woff"),
+           url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.ttf") format("truetype"),
+           url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.svg#OCR B Letterpress M W01 Regular") format("svg");
+    }
+
+body {
+  background-color: var(--bg-color, #18181a);
+  font-family: "OCR B Letterpress M W01 Regular";
+  color: var(--fg-color, #fff);
+}
+
+input { padding: 8px; width: 300px; }
+button { padding: 8px; }
+.results {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers the .profile boxes */
+}
+
+.profile {
+  width: 600px; /* or adjust as needed */
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  background-color: #222;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.profile:hover {
+  background-color: #2d2d2d;
+}
+
+.profile img {
+  width: 88px;
+  height: 88px;
+  border-radius: 6px;
+  margin-right: 15px;
+}
+
+.profile div {
+  text-align: left; /* ensures the text doesn't center under the image */
+}
+
+  </style>
+</head>
+<body>
+  <center>
+    <h1>Search YouTube Channel</h1>
+    <input type="text" id="searchBox" placeholder="Enter YouTube channel name (e.g. mrbeast)" />
+    <button id="searchButton">Search</button>
+
+    <div class="results" id="results"></div>
+  </center>
+
+  <script>
+    document.getElementById('searchButton').addEventListener('click', searchYouTubeChannel);
+
+    async function searchYouTubeChannel() {
+      const query = document.getElementById('searchBox').value.trim();
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = '';
+
+      if (!query) {
+        alert("Please enter a channel name.");
+        return;
+      }
+
+      const url = `https://api-v2.nextcounts.com/api/search/youtube/channel/${encodeURIComponent(query)}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("API request failed");
+
+        const data = await response.json();
+        if (!data.success || !data.results || data.results.length === 0) {
+          resultsContainer.innerHTML = `<p style="color: red;">No channels found.</p>`;
+          return;
+        }
+
+        data.results.forEach(channel => {
+          const div = document.createElement('div');
+          div.className = 'profile';
+          
+          div.innerHTML = `
+            <img src="${channel.pfp}" alt="${channel.displayName}" />
+            <div>
+              <strong>${channel.displayName}</strong><br>
+              Subscribers: ${formatNumber(channel.subcount)}<br>
+              Channel ID: ${channel.cid}
+            </div>
+          `;
+
+          div.onclick = () => {
+            window.location.href = `youtube.html?channel=${encodeURIComponent(channel.cid)}`;
+          };
+
+          resultsContainer.appendChild(div);
+        });
+
+      } catch (err) {
+        console.error("Error:", err);
+        resultsContainer.innerHTML = `<p style="color: red;">Error fetching data. Please try again.</p>`;
+      }
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString();
+    }
+  </script>
+</body>
+</html>

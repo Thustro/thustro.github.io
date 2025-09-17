@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Compare YouTube Channels</title>
+<style>
+  @font-face {
+    font-family: "OCR B Letterpress M W01 Regular";
+    src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot");
+    src: url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.eot?#iefix") format("embedded-opentype"),
+         url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff2") format("woff2"),
+         url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.woff") format("woff"),
+         url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.ttf") format("truetype"),
+         url("https://db.onlinewebfonts.com/t/ee0a77409573f136e96a9dcae635570a.svg#OCR B Letterpress M W01 Regular") format("svg");
+  }
+
+  body {
+    background-color: #18181a;
+    font-family: "OCR B Letterpress M W01 Regular", monospace;
+    color: #fff;
+    margin: 1rem;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  .user-panel {
+    background-color: #222;
+    padding: 1rem;
+    width: 45%;
+    border-radius: 8px;
+  }
+  input[type="text"] {
+    width: 80%;
+    padding: 6px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    margin-right: 8px;
+  }
+  button {
+    padding: 6px 12px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .results {
+    margin-top: 1rem;
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #1a1a1a;
+  }
+  .profile {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .profile:hover {
+    background-color: #333;
+  }
+  .profile.selected {
+    background-color: #0f74f9;
+    color: #fff;
+  }
+  .profile img {
+    width: 64px;
+    height: 64px;
+    border-radius: 6px;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  .profile-info {
+    flex-grow: 1;
+  }
+  .profile-name {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .profile-subs {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.85rem;
+  }
+  .selected-profile {
+    margin-top: 10px;
+    padding: 10px;
+    background: #111;
+    border-radius: 5px;
+    min-height: 70px;
+    font-style: italic;
+  }
+  .compare-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="user-panel" id="user1">
+      <h2>Channel 1</h2>
+      <div>
+        <input type="text" placeholder="Search channel..." />
+        <button>Search</button>
+      </div>
+      <div class="results"></div>
+      <div class="selected-profile">No channel selected</div>
+    </div>
+    <div class="user-panel" id="user2">
+      <h2>Channel 2</h2>
+      <div>
+        <input type="text" placeholder="Search channel..." />
+        <button>Search</button>
+      </div>
+      <div class="results"></div>
+      <div class="selected-profile">No channel selected</div>
+    </div>
+  </div>
+
+  <div class="compare-container">
+    <button id="compareBtn" disabled>Compare Selected Channels</button>
+  </div>
+
+<script>
+  class UserPanel {
+    constructor(containerId) {
+      this.container = document.getElementById(containerId);
+      this.input = this.container.querySelector("input[type=text]");
+      this.searchBtn = this.container.querySelector("button");
+      this.resultsDiv = this.container.querySelector(".results");
+      this.selectedDiv = this.container.querySelector(".selected-profile");
+      this.selectedChannel = null;
+
+      this.searchBtn.addEventListener("click", () => this.searchChannels());
+      this.input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") this.searchChannels();
+      });
+    }
+
+    async searchChannels() {
+      const query = this.input.value.trim();
+      if (!query) {
+        alert("Please enter a channel name");
+        return;
+      }
+      this.resultsDiv.innerHTML = "Loading...";
+      this.selectedChannel = null;
+      this.updateSelected();
+      updateCompareButton();
+
+      const url = `https://api-v2.nextcounts.com/api/search/youtube/channel/${encodeURIComponent(query)}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("API request failed");
+
+        const data = await response.json();
+
+        this.resultsDiv.innerHTML = "";
+
+        if (!data.success || !data.results || data.results.length === 0) {
+          this.resultsDiv.innerHTML = "<p>No channels found.</p>";
+          return;
+        }
+
+        data.results.forEach((channel) => {
+          const div = document.createElement("div");
+          div.className = "profile";
+          div.innerHTML = `
+            <img src="${channel.pfp}" alt="${channel.displayName}" />
+            <div class="profile-info">
+              <div class="profile-name">${channel.displayName}</div>
+              <div class="profile-subs">Subscribers: ${formatNumber(channel.subcount)}</div>
+              <div class="profile-id">Channel ID: ${channel.cid}</div>
+            </div>
+          `;
+          div.addEventListener("click", () => {
+            this.selectedChannel = channel;
+            this.updateSelected();
+            updateCompareButton();
+            this.highlightSelected(channel.cid);
+          });
+          this.resultsDiv.appendChild(div);
+        });
+      } catch (err) {
+        console.error(err);
+        this.resultsDiv.innerHTML = "<p>Error loading channels.</p>";
+      }
+    }
+
+    updateSelected() {
+      if (this.selectedChannel) {
+        this.selectedDiv.innerHTML = `<strong>${this.selectedChannel.displayName}</strong> — Subscribers: ${formatNumber(this.selectedChannel.subcount)}`;
+        this.selectedDiv.style.fontStyle = "normal";
+      } else {
+        this.selectedDiv.textContent = "No channel selected";
+        this.selectedDiv.style.fontStyle = "italic";
+      }
+      this.highlightSelected(this.selectedChannel ? this.selectedChannel.cid : null);
+    }
+
+    highlightSelected(cid) {
+      this.resultsDiv.querySelectorAll(".profile").forEach(div => {
+        const name = div.querySelector(".profile-name").textContent;
+        const isSelected = this.selectedChannel && this.selectedChannel.displayName === name;
+        div.classList.toggle("selected", isSelected);
+      });
+    }
+  }
+
+  const user1 = new UserPanel("user1");
+  const user2 = new UserPanel("user2");
+
+  const compareBtn = document.getElementById("compareBtn");
+
+  function updateCompareButton() {
+    compareBtn.disabled = !(user1.selectedChannel && user2.selectedChannel);
+  }
+
+  compareBtn.addEventListener("click", () => {
+    if (!(user1.selectedChannel && user2.selectedChannel)) {
+      alert("Please select a channel for both users.");
+      return;
+    }
+    // You can customize this URL for your compare page
+    const url = `youtubecompare.html?channel1=${encodeURIComponent(user1.selectedChannel.cid)}&channel2=${encodeURIComponent(user2.selectedChannel.cid)}`;
+    window.location.href = url;
+  });
+
+  function formatNumber(num) {
+    return num.toLocaleString();
+  }
+</script>
+</body>
+</html>
