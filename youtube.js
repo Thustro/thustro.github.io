@@ -10,7 +10,7 @@ if (!user) {
     throw new Error("channel missing");
 }
 
-const apiUrl = `https://api-v2.nextcounts.com/api/youtube/channel/estimate/mixerno/${user}`;
+const apiUrl = `https://backend.mixerno.space/api/youtube/estv3/${user}`;
 
 setInterval(getsubs, 5000);
 setInterval(getData, 5000);
@@ -20,16 +20,17 @@ charts();
 getData();
 
 async function getsubs() {
-    const responseCarry = await fetch(apiUrl);
-    const dataCarry = await responseCarry.json();
+    const response = await fetch(apiUrl);
+    const json = await response.json();
+    const data = json.items[0]; // Updated for new structure
 
-    const statsCarry = dataCarry.estimatedSubCount;
-    const name = dataCarry.channelName;
-    const apisubcount = dataCarry.subCountAPI;
-    const apiviews = dataCarry.totalViewsAPI;
-    const views = dataCarry.totalViews;
-    const videos = dataCarry.videos;
-    const pfp = dataCarry.avatar;
+    const statsCarry = parseInt(data.statistics.subscriberCount);
+    const name = data.snippet.title;
+    const apisubcount = parseInt(data.statistics.subscriberCountAPI);
+    const apiviews = parseInt(data.statistics.viewCountAPI);
+    const views = parseInt(data.statistics.viewCount);
+    const videos = parseInt(data.statistics.videoCount);
+    const pfp = data.snippet.thumbnails.default.url;
 
     const rootCarry = document.getElementById('count');
     const carry = document.getElementById('odometer');
@@ -74,7 +75,6 @@ async function getsubs() {
     const clampedProgress = Math.min(Math.max(progressPercent, 0), 100);
     const remaining = nextMilestone - statsCarry;
 
-
     document.getElementById("toGoal").textContent = toGoal.toLocaleString();
     document.getElementById("goalLabel").textContent = `To Goal (${nextMilestone.toLocaleString()})`;
     document.getElementById("currentvisits").textContent = statsCarry;
@@ -83,29 +83,28 @@ async function getsubs() {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // Update DOM elements
     document.querySelector('.progress-fill').style.width = clampedProgress + '%';
     document.querySelector('.previous-milestone').textContent = formatNumber(previousMilestone);
     document.querySelector('.next-milestone').textContent = formatNumber(nextMilestone);
     document.querySelector('.current-visits').textContent = formatNumber(statsCarry);
     document.querySelector('.remaining').textContent = `${formatNumber(remaining)} remaining`;
 
-    updateProgressBar(statsCarry, nextMilestone)
+    updateProgressBar(statsCarry, nextMilestone);
 
-    document.title = `${gameName} Live Statistics`;
+    document.title = `${name} Live Statistics`;
 }
 
 function updateProgressBar(current, goal) {
-  const percent = (current / goal) * 100;
-  const remaining = goal - current;
+    const percent = (current / goal) * 100;
+    const remaining = goal - current;
 
-  const progressFill = document.getElementById("progressFill");
-  const goalLabel = document.getElementById("goalLabel");
-  const remainingLabel = document.getElementById("remainingLabel");
+    const progressFill = document.getElementById("progressFill");
+    const goalLabel = document.getElementById("goalLabel");
+    const remainingLabel = document.getElementById("remainingLabel");
 
-  progressFill.style.width = `${Math.min(percent, 100)}%`;
-  goalLabel.textContent = `To Goal (${goal.toLocaleString()})`;
-  remainingLabel.textContent = `${remaining.toLocaleString()} remaining`;
+    progressFill.style.width = `${Math.min(percent, 100)}%`;
+    goalLabel.textContent = `To Goal (${goal.toLocaleString()})`;
+    remainingLabel.textContent = `${remaining.toLocaleString()} remaining`;
 }
 
 var chart = null;
@@ -113,9 +112,10 @@ var apiData = [];
 
 function getData() {
     fetch(apiUrl)
-        .then(blob => blob.json())
-        .then(data => {
-            const visits = data.estimatedSubCount
+        .then(res => res.json())
+        .then(json => {
+            const data = json.items[0];
+            const visits = parseInt(data.statistics.subscriberCount);
 
             apiData.push([Date.now(), visits]);
 
@@ -138,9 +138,10 @@ async function charts() {
         global: { useUTC: true }
     });
 
-    const responseCarry = await fetch(apiUrl);
-    const dataCarry = await responseCarry.json();
-    const statsCarry = dataCarry.followersCount;
+    const response = await fetch(apiUrl);
+    const json = await response.json();
+    const data = json.items[0];
+    const statsCarry = parseInt(data.statistics.subscriberCount);
 
     Highcharts.chart('container', {
         chart: {
@@ -173,6 +174,4 @@ async function charts() {
     }, function (ch) {
         chart = ch;
     });
-
-
 }
