@@ -42,16 +42,6 @@ body {
   font-size: 14px;
 }
 
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  width: 30%;
-  background-color: var(--bg-color, #1f1e1e);
-  padding: 20px;
-  text-align: center;
-  margin: 0 auto;
-}
-
 .topbar-left {
   display: flex;
   align-items: center;
@@ -90,15 +80,15 @@ p.lol {
 }
 
 .action-btn {
-  display: block;
-  margin: 15px auto 0;
-  padding: 10px 50px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 0;
+  font-size: 18px;
   background-color: #474747;
   color: white;
   border: none;
-  font-weight: bold;
   border-radius: 5px;
-  font-size: 24px;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -109,20 +99,74 @@ p.lol {
 
 .cards-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 40px; /* space between cards */
-  margin-top: 40px;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
 }
 
 .card {
-  width: 750px; /* smaller width so two fit comfortably */
-  margin: 0;    /* remove margin: 0 auto; so they don't stack */
+  background-color: var(--bg-color, #1f1e1e);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.card img {
+  height: 100px;
+  margin-bottom: 15px;
+}
+
+.card p.mangos {
+  font-size: 22px;
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar-right {
+    margin-top: 10px;
+  }
+
+  .mangos {
+    font-size: 36px;
+    text-align: center;
+  }
+
+  .action-btn {
+    font-size: 18px;
+    padding: 8px 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    max-width: 100%;
+    min-height: unset;
+    padding: 15px;
+  }
+
+  .action-btn {
+    font-size: 16px;
+    padding: 8px 0;
+  }
 }
 
 </style>
 	</head>
-	<center>
 	<body>
+  <center>
   <div class="topbar">
     <div class="topbar-left">
       <img src="norfolkcounts.png" alt="Logo" style="height: 20px; margin-right: 8px;">
@@ -134,7 +178,7 @@ p.lol {
   </div>
   <p class="mangos">welcome to my livecounts website tool ✌</p>
   <div class="cards-container">
-
+  
   <div class="card">
     <img src="youtubelogo.png" style="height: 120px; display: block; margin: 0 auto 20px;">
     <p class="mangos">Youtube Statistics</p>
@@ -163,5 +207,6 @@ p.lol {
     <p class="mangos">Global Clicker Statistics</p>
     <button class="action-btn" onclick="window.location.href='globalclicker.html'">Global Clicker Statistics</button>
   </div>
+  </center>
 </div>
 </html>
