@@ -127,7 +127,7 @@ async function charts() {
             href: 'https://thustro.github.io/',
         },
         series: [{
-            name: 'Followers',
+            name: 'Clicks',
             data: apiData,
             lineWidth: 5,
             color: 'white'
@@ -135,6 +135,7 @@ async function charts() {
     }, function (ch) {
         chart = ch;
     });
+
 
 
 }
