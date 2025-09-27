@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Upload Timer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #timer {
+      font-size: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">Loading...</div>
+
+  <script>
+    // get videoId from DecAPI
+    async function fetchLatestVideoId(channelId) {
+      const decapiUrl = `https://decapi.me/youtube/latest_video?id=${encodeURIComponent(channelId)}`;
+      const res = await fetch(decapiUrl);
+      const txt = await res.text();
+      const match = txt.match(/(?:v=|youtu\.be\/)([\w\-]+)/);
+      if (!match) throw new Error("Could not extract video ID from DecAPI response: " + txt);
+      return match[1];
+    }
+
+    // fetch publish time using beren API
+    async function fetchPublishTime(videoId) {
+      const url = `https://youdate.beren.dev/api/v1?q=${encodeURIComponent(videoId)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("beren API returned error: " + res.status);
+      const data = await res.json();
+      if (!data || !data.items || !data.items[0] || !data.items[0].published) {
+        throw new Error("No publish time in beren API response");
+      }
+      // assuming published is ISO 8601 or something parseable
+      return new Date(data.items[0].published);
+    }
+
+    function startCountup(publishDate) {
+      const timerEl = document.getElementById("timer");
+      function update() {
+        const now = new Date();
+        let diffMs = now - publishDate;
+        if (diffMs < 0) diffMs = 0;
+        const totalSeconds = Math.floor(diffMs / 1000);
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const hStr = hours.toString();  // allow no-leading-zero for hours
+        const mStr = minutes.toString().padStart(2, "0");
+        const sStr = seconds.toString().padStart(2, "0");
+
+        timerEl.textContent = `${hStr}:${mStr}:${sStr}`;
+      }
+      update();
+      setInterval(update, 1000);
+    }
+
+    // main init
+    (async function init() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const channelId = params.get("channel");
+        if (!channelId) {
+          document.getElementById("timer").textContent = "No channel in URL";
+          return;
+        }
+
+        const vid = await fetchLatestVideoId(channelId);
+        const publishDate = await fetchPublishTime(vid);
+        startCountup(publishDate);
+
+        // optionally monitor for new video and restart timer
+        let lastVid = vid;
+        setInterval(async () => {
+          try {
+            const newVid = await fetchLatestVideoId(channelId);
+            if (newVid !== lastVid) {
+              lastVid = newVid;
+              const newPublish = await fetchPublishTime(newVid);
+              startCountup(newPublish);
+            }
+          } catch(e) {
+            console.error("Error checking for new video:", e);
+          }
+        }, 60000);  // check every minute
+
+      } catch (e) {
+        console.error("Init error:", e);
+        document.getElementById("timer").textContent = "Error loading timer";
+      }
+    })();
+  </script>
+</body>
+</html>

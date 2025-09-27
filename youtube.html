@@ -61,6 +61,12 @@ p.mangos {
   height: 20px;
 }
 
+p.mustard {
+  font-weight: bold;
+  font-size: 25px;
+  height: 20px;
+}
+
 p.odometer {
 	top: 5px; font-size: 125px;
 }
@@ -250,6 +256,15 @@ img.pfp {
   color: #999;
 }
 
+.block {
+  text-align: center;
+  padding: 20px;
+  margin: 20px auto;
+  background-color: #1f1e1e;
+  border-radius: 8px;
+  width: 88.33%;
+}
+
 
 
 </style>
@@ -283,10 +298,6 @@ img.pfp {
     <p class="stat-label">Subscribers (API)</p>
   </div>
   <div class="stat-block">
-    <p id="statViewsEST" class="odometer odometer2">0</p>
-    <p class="stat-label">Views (EST)</p>
-  </div>
-  <div class="stat-block">
     <p id="statViewsAPI" class="odometer odometer2">0</p>
     <p class="stat-label">Views (API)</p>
   </div>
@@ -298,6 +309,10 @@ img.pfp {
     <p id="toGoal" class="odometer odometer2">0</p>
     <p id="goalLabel" class="stat-label">Subscribers To (Loading...)</p>
   </div>
+</div>
+
+<div class="block">
+  <a id="embedLink" href="#">want a small embed of the channel?</a>
 </div>
 
 </div>

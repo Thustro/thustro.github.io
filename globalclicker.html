@@ -61,6 +61,12 @@ p.mangos {
   height: 20px;
 }
 
+p.mangos2 {
+  font-weight: bold;
+  font-size: 25px;
+  height: 20px;
+}
+
 p.odometer {
 	top: 5px; font-size: 125px;
 }
@@ -156,13 +162,12 @@ p.mangos2 {
 }
 
 img.pfp {
-  border-radius: 50%;
   height: 179px;
 }
   
 .stats-row {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   margin: 30px auto;
@@ -170,12 +175,15 @@ img.pfp {
   background-color: #1f1e1e;
   border-radius: 8px;
   width: 88.33%;
+  gap: 300px;
 }
 
 .stat-block {
   text-align: center;
   padding: 10px 20px;
   min-width: 150px;
+  flex: 1;
+  max-width: 300px;
 }
 
 .stat-number {
@@ -250,6 +258,25 @@ img.pfp {
   color: #999;
 }
 
+.eta-block {
+  text-align: center;
+  padding: 20px;
+  margin: 20px auto;
+  background-color: #1f1e1e;
+  border-radius: 8px;
+  width: 88.33%;
+}
+
+.eta-block .stat-number {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.eta-block .stat-label {
+  font-size: 20px;
+  color: #ccc;
+}
+
 
 
 </style>
@@ -282,6 +309,20 @@ img.pfp {
     <p id="toGoal" class="odometer odometer2">0</p>
     <p id="goalLabel" class="stat-label">Clicks To (Loading...)</p>
   </div>
+  <div class="stat-block">
+    <p id="cpm" class="odometer odometer2">0</p>
+    <p class="stat-label">Clicks / Minute</p>
+  </div>
+  <div class="stat-block">
+    <p id="cph" class="odometer odometer2">0</p>
+    <p class="stat-label">Clicks / Hour</p>
+  </div>
+</div>
+
+<div class="eta-block">
+  <p id="eta-goal" class="stat-label">--</p>
+  <p id="eta-date" class="stat-number">--</p>
+  <p id="eta-text" class="stat-label">Not enough data</p>
 </div>
 
 </div>
@@ -308,7 +349,6 @@ img.pfp {
       <div class="remaining" style="margin-top: 5px;"></div>
       </center>
     </div>
-
 
 
 </html>

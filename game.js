@@ -143,6 +143,64 @@ async function fetchLikesDislikes(universeId) {
   return data;  // assuming { likes: ..., dislikes: ... }
 }
 
+function updateRates(currentClicks, nextMilestone) {
+    const now = Date.now();
+
+    if (lastClickCount !== null && lastUpdateTime !== null) {
+        const diffClicks = currentClicks - lastClickCount;
+        const diffTime = (now - lastUpdateTime) / 1000;
+
+        if (diffTime > 0 && diffClicks >= 0) {
+            const clicksPerSecond = diffClicks / diffTime;
+            const clicksPerMinute = Math.round(clicksPerSecond * 60);
+            const clicksPerHour = Math.round(clicksPerSecond * 3600);
+
+            document.getElementById("cpm").textContent = clicksPerMinute.toLocaleString();
+            document.getElementById("cph").textContent = clicksPerHour.toLocaleString();
+
+            latestCPM = clicksPerMinute;
+            latestClicks = currentClicks;
+            latestNextMilestone = nextMilestone;
+
+            updateETA(currentClicks, nextMilestone, clicksPerMinute);
+        }
+    }
+
+    lastClickCount = currentClicks;
+    lastUpdateTime = now;
+}
+
+function updateETA(currentClicks, nextMilestone, clicksPerMinute) {
+    if (!nextMilestone || clicksPerMinute <= 0) {
+        document.getElementById("eta-date").textContent = "--";
+        document.getElementById("eta-text").textContent = "Not enough data";
+        return;
+    }
+
+    const remaining = nextMilestone - currentClicks;
+    const minutesRemaining = remaining / clicksPerMinute;
+    const etaDate = new Date(Date.now() + minutesRemaining * 60000);
+
+    const dateStr = etaDate.toLocaleString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    const totalSeconds = Math.max(0, Math.floor(minutesRemaining * 60));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const countdown = `in ${days} day${days !== 1 ? 's' : ''}, ${hours} hour${hours !== 1 ? 's' : ''}, ${minutes} minute${minutes !== 1 ? 's' : ''}, and ${seconds} second${seconds !== 1 ? 's' : ''}`;
+
+    document.getElementById("eta-date").textContent = dateStr;
+    document.getElementById("eta-text").textContent = countdown;
+}
+
 var chart = null;
 var apiData = [];
 

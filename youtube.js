@@ -1,75 +1,70 @@
-function getYoutubeUserFromURL() {
+document.addEventListener("DOMContentLoaded", () => {
+  function getYoutubeUserFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get("channel");
-}
+  }
 
-const user = getYoutubeUserFromURL();
+  const user = getYoutubeUserFromURL();
 
-if (!user) {
+  const embedLink = document.getElementById("embedLink");
+  if (embedLink && user) {
+    embedLink.href = `youtubeembed.html?channel=${encodeURIComponent(user)}`;
+  }
+
+  if (!user) {
     alert("No channel provided in the URL.");
     throw new Error("channel missing");
-}
+  }
 
-const apiUrl = `https://backend.mixerno.space/api/youtube/estv3/${user}`;
+  const apiUrl = `https://ests.sctools.org/api/get/${user}`;
 
-setInterval(getsubs, 5000);
-setInterval(getData, 5000);
+  setInterval(getsubs, 3000);
+  setInterval(getData, 3000);
 
-getsubs();
-charts();
-getData();
+  getsubs();
+  charts();
+  getData();
 
-async function getsubs() {
+  async function getsubs() {
     const response = await fetch(apiUrl);
     const json = await response.json();
-    const data = json.items[0]; // Updated for new structure
 
-    const statsCarry = parseInt(data.statistics.subscriberCount);
-    const name = data.snippet.title;
-    const apisubcount = parseInt(data.statistics.subscriberCountAPI);
-    const apiviews = parseInt(data.statistics.viewCountAPI);
-    const views = parseInt(data.statistics.viewCount);
-    const videos = parseInt(data.statistics.videoCount);
-    const pfp = data.snippet.thumbnails.default.url;
+    const statsCarry = parseInt(json.stats.estCount);   // estimated subs
+    const name = json.info.name;
+    const apisubcount = parseInt(json.stats.apiCount);
+    const views = parseInt(json.stats.viewCount);
+    const videos = parseInt(json.stats.videoCount);
+    const pfp = json.info.avatar;
 
-    const rootCarry = document.getElementById('count');
-    const carry = document.getElementById('odometer');
-    odometer.innerHTML = statsCarry;
+    // Update odometer
+    document.getElementById('odometer').innerHTML = statsCarry;
 
-    const pfppic = document.getElementById('gameIcon');
-    pfppic.src = pfp;
+    // Update pfp
+    document.getElementById('gameIcon').src = pfp;
 
-    const username = document.getElementById('name');
-    username.textContent = name;
+    // Update name
+    document.getElementById('name').textContent = name;
 
-    const statsubsapi = document.getElementById('statSubsAPI');
-    statsubsapi.textContent = apisubcount;
+    // Update stat blocks
+    document.getElementById('statSubsAPI').textContent = apisubcount.toLocaleString();
+    document.getElementById('statViewsAPI').textContent = views.toLocaleString();
+    document.getElementById('statVideos').textContent = videos.toLocaleString();
 
-    const statviewsest = document.getElementById('statViewsEST');
-    statviewsest.textContent = views;
-
-    const statviewsapi = document.getElementById('statViewsAPI');
-    statviewsapi.textContent = apiviews;
-
-    const vids = document.getElementById('statVideos');
-    vids.textContent = videos;
-
+    // Calculate milestones
     function calculateMilestones(n) {
-        let step;
-        if (n < 1_000_000) {
-            const digits = Math.floor(Math.log10(n));
-            step = Math.pow(10, digits);
-        } else {
-            step = 1_000_000;
-        }
-
-        const next = Math.ceil(n / step) * step;
-        const previous = next - step;
-
-        return { next, previous, step };
+      let step;
+      if (n < 1_000_000) {
+        const digits = Math.floor(Math.log10(n));
+        step = Math.pow(10, digits);
+      } else {
+        step = 1_000_000;
+      }
+      const next = Math.ceil(n / step) * step;
+      const previous = next - step;
+      return { next, previous, step };
     }
 
-    const { next: nextMilestone, previous: previousMilestone, step: milestoneStep } = calculateMilestones(statsCarry);
+    const { next: nextMilestone, previous: previousMilestone } = calculateMilestones(statsCarry);
     const toGoal = nextMilestone - statsCarry;
     const progressPercent = ((statsCarry - previousMilestone) / (nextMilestone - previousMilestone)) * 100;
     const clampedProgress = Math.min(Math.max(progressPercent, 0), 100);
@@ -77,10 +72,10 @@ async function getsubs() {
 
     document.getElementById("toGoal").textContent = toGoal.toLocaleString();
     document.getElementById("goalLabel").textContent = `To Goal (${nextMilestone.toLocaleString()})`;
-    document.getElementById("currentvisits").textContent = statsCarry;
+    document.getElementById("currentvisits").textContent = statsCarry.toLocaleString();
 
     function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     document.querySelector('.progress-fill').style.width = clampedProgress + '%';
@@ -92,9 +87,9 @@ async function getsubs() {
     updateProgressBar(statsCarry, nextMilestone);
 
     document.title = `${name} Live Statistics`;
-}
+  }
 
-function updateProgressBar(current, goal) {
+  function updateProgressBar(current, goal) {
     const percent = (current / goal) * 100;
     const remaining = goal - current;
 
@@ -102,76 +97,75 @@ function updateProgressBar(current, goal) {
     const goalLabel = document.getElementById("goalLabel");
     const remainingLabel = document.getElementById("remainingLabel");
 
-    progressFill.style.width = `${Math.min(percent, 100)}%`;
-    goalLabel.textContent = `To Goal (${goal.toLocaleString()})`;
-    remainingLabel.textContent = `${remaining.toLocaleString()} remaining`;
-}
+    if (progressFill) progressFill.style.width = `${Math.min(percent, 100)}%`;
+    if (goalLabel) goalLabel.textContent = `To Goal (${goal.toLocaleString()})`;
+    if (remainingLabel) remainingLabel.textContent = `${remaining.toLocaleString()} remaining`;
+  }
 
-var chart = null;
-var apiData = [];
+  var chart = null;
+  var apiData = [];
 
-function getData() {
+  function getData() {
     fetch(apiUrl)
-        .then(res => res.json())
-        .then(json => {
-            const data = json.items[0];
-            const visits = parseInt(data.statistics.subscriberCount);
+      .then(res => res.json())
+      .then(json => {
+        const visits = parseInt(json.stats.estCount);
 
-            apiData.push([Date.now(), visits]);
+        apiData.push([Date.now(), visits]);
 
-            if (chart) {
-                if (apiData.length > 8) {
-                    apiData.shift();
-                    chart.series[0].setData(apiData);
-                } else {
-                    chart.series[0].addPoint([Date.now(), visits]);
-                }
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching chart data:", error);
-        });
-}
+        if (chart) {
+          if (apiData.length > 8) {
+            apiData.shift();
+            chart.series[0].setData(apiData);
+          } else {
+            chart.series[0].addPoint([Date.now(), visits]);
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching chart data:", error);
+      });
+  }
 
-async function charts() {
+  async function charts() {
     Highcharts.setOptions({
-        global: { useUTC: true }
+      global: { useUTC: true }
     });
 
     const response = await fetch(apiUrl);
     const json = await response.json();
-    const data = json.items[0];
-    const statsCarry = parseInt(data.statistics.subscriberCount);
+    const statsCarry = parseInt(json.stats.estCount);
 
     Highcharts.chart('container', {
-        chart: {
-            backgroundColor: 'transparent',
-            type: 'area',
-            zoomType: 'x'
+      chart: {
+        backgroundColor: 'transparent',
+        type: 'area',
+        zoomType: 'x'
+      },
+      title: { text: '' },
+      xAxis: { visible: false },
+      yAxis: { visible: false },
+      plotOptions: {
+        series: {
+          threshold: null,
+          fillOpacity: 0.1
         },
-        title: { text: '' },
-        xAxis: { visible: false },
-        yAxis: { visible: false },
-        plotOptions: {
-            series: {
-                threshold: null,
-                fillOpacity: 0.1
-            },
-            area: {
-                fillOpacity: 0.1
-            }
-        },
-        credits: {
-            text: 'norfolkcounts',
-            href: 'https://thustro.github.io/',
-        },
-        series: [{
-            name: 'Subscribers',
-            data: apiData,
-            lineWidth: 5,
-            color: 'white'
-        }]
+        area: {
+          fillOpacity: 0.1
+        }
+      },
+      credits: {
+        text: 'norfolkcounts',
+        href: 'https://thustro.github.io/',
+      },
+      series: [{
+        name: 'Subscribers',
+        data: apiData,
+        lineWidth: 5,
+        color: 'white'
+      }]
     }, function (ch) {
-        chart = ch;
+      chart = ch;
     });
-}
+  }
+});
