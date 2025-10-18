@@ -12,6 +12,20 @@ document.getElementById('convert1.19').onclick = function() {
     document.getElementById("fixedlink").innerText = text;
 };
 
+document.getElementById('convert1.20').onclick = function() {
+    let text = document.getElementById("pslink").value;
+    const replacements = {
+        "Twisted-Legacy": "1-20-1",
+        "121437276722082": "123866795811080",
+    };
+
+    for (const [key, value] of Object.entries(replacements)) {
+        text = text.replaceAll(key, value);
+    }
+
+    document.getElementById("fixedlink").innerText = text;
+};
+
 document.getElementById('convert1.18').onclick = function() {
     let text = document.getElementById("pslink").value;
     const replacements = {
