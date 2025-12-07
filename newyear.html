@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link href="https://github.hubspot.com/odometer/themes/odometer-theme-minimal.css" rel="stylesheet">
+<link href="nycalltzstats.css" rel="stylesheet">
+<script src="https://huntingstats378.github.io/HuntingStats378/main/assets/ess/odometerleading.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://momentjs.com/downloads/moment-timezone.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<link rel=stylesheet href="https://huntingstats378.github.io/HuntingStats378/main/assets/ess/odometer05s.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone-with-data-10-year-range.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone.min.js"></script>
+<style>
+p {
+  font-size: 60px;
+  margin-top: 0px;
+label {
+  font-size: 30px;
+  margin-top: 0px;
+}
+</style>
+</head>
+<body>
+<body onload="startTime()">
+<p id="days" class="odometer" style="font-size: 180px; position: relative; top: 80px; right: -50px;"></p>
+<label style="font-size: 180px; position: relative; top: -35px; right: -50px;">:</label>
+<p id="hours" class="odometer" style="font-size: 180px; position: relative; top: 80px; right: -50px;">:</></p>
+<label style="font-size: 180px; position: relative; top: -35px; right: -45px;">:</label>
+<p id="minutes" class="odometer" style="font-size: 180px; position: relative; top: 80px; right: -50px;"></p>
+<label style="font-size: 180px; position: relative; top: -35px; right: -50px;">:</label>
+<p id="seconds" class="odometer" style="font-size: 180px; position: relative; top: 80px; right: -50px;"></p>	
+<script>
+
+const odometers = document.querySelectorAll(".odometer");
+        for (const odo of odometers) {
+          new Odometer({
+            el: odo,
+            format: "(ddd)",
+            minIntegerLen: 2,
+          });
+        }
+
+// Set the date we're counting down to
+moment.tz.add('Pacific/Marquesas|LMT -0930|9i 9u|01|-2joeG|86e2')
+var countDownDate = new moment.tz("2026-01-01 00:00", "Australia/Sydney");
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time	
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  
+  // Output the result in an element with id="demo"
+  document.getElementById("days").innerHTML = days + "d ";
+ 
+   // Output the result in an element with id="demo"
+  document.getElementById("hours").innerHTML = hours + "h ";
+
+    // Output the result in an element with id="demo"
+  document.getElementById("minutes").innerHTML = minutes + "m ";
+ 
+     // Output the result in an element with id="demo"
+  document.getElementById("seconds").innerHTML = seconds + "s ";
+ });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://momentjs.com/downloads/moment-timezone-with-data-10-year-range.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+</body>
+</html>
