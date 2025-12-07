@@ -1,0 +1,49 @@
+/* Apply to all odometer elements */
+.odometer {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 180px;
+  color: black;
+  /* White outline using text stroke */
+  -webkit-text-stroke: 3px white; /* stroke width */
+  -moz-text-stroke: 3px white;
+  text-stroke: 3px white;
+  /* Fallback for browsers that don't support text-stroke */
+  text-shadow:
+    3px 3px 0 #fff,
+   -3px 3px 0 #fff,
+    3px -3px 0 #fff,
+   -3px -3px 0 #fff,
+    3px 0px 0 #fff,
+   -3px 0px 0 #fff,
+    0px 3px 0 #fff,
+    0px -3px 0 #fff;
+}
+
+/* Center labels as well */
+label {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 180px;
+  color: black;
+  -webkit-text-stroke: 3px white;
+  text-shadow:
+    3px 3px 0 #fff,
+   -3px 3px 0 #fff,
+    3px -3px 0 #fff,
+   -3px -3px 0 #fff,
+    3px 0px 0 #fff,
+   -3px 0px 0 #fff,
+    0px 3px 0 #fff,
+    0px -3px 0 #fff;
+}
+
+/* Optional: center everything on page */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #111; /* dark background for contrast */
+  margin: 0;
+}
