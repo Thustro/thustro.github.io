@@ -61,7 +61,7 @@
 
   FRAMES_PER_VALUE = 2;
 
-  DIGIT_SPEEDBOOST = 0.5;
+  DIGIT_SPEEDBOOST = 1;
 
   MS_PER_FRAME = 1000 / FRAMERATE;
 
@@ -875,3 +875,4 @@
     window.Odometer = Odometer;
   }
 }).call(this);
+
