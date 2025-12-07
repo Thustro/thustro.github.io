@@ -63,9 +63,9 @@
 
   DIGIT_SPEEDBOOST = 1;
 
-  MS_PER_FRAME = 1000 / FRAMERATE;
+  MS_PER_FRAME = 500 / FRAMERATE;
 
-  COUNT_MS_PER_FRAME = 1000 / COUNT_FRAMERATE;
+  COUNT_MS_PER_FRAME = 500 / COUNT_FRAMERATE;
 
   TRANSITION_END_EVENTS =
     "transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
@@ -875,4 +875,5 @@
     window.Odometer = Odometer;
   }
 }).call(this);
+
 
