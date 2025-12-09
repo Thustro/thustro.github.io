@@ -1,4 +1,4 @@
-const apiUrl = `http://market-appreciate.gl.at.ply.gg:32396/total`;
+const apiUrl = `https://market-appreciate.gl.at.ply.gg:32396/total`;
 let clickHistory = [];
 
 setInterval(getsubs, 5000);
@@ -136,6 +136,7 @@ async function charts() {
     }, function (ch) {
         chart = ch;
     });
+
 
 
 }
