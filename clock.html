@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Your odometer theme -->
+<link rel="stylesheet" href="https://huntingstats378.github.io/HuntingStats378/main/assets/ess/odometer05s.css">
+<script src="https://huntingstats378.github.io/HuntingStats378/main/assets/ess/odometerleading.js"></script>
+
+<title>Clock</title>
+
+<!-- Moment + Timezone (FULL 10-year data) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone-with-data-10-year-range.min.js"></script>
+
+<style>
+    body {
+        background: #000;
+        margin: 0;
+        padding: 20px;
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #timeContainer {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    #dateText {
+        font-size: 26px;
+        opacity: 0.85;
+        margin-bottom: 0px;
+        font-family: monospace;
+    }
+
+    #timezoneText {
+        font-size: 15px;
+        opacity: 0.85;
+        margin-bottom: 2px;
+        font-family: monospace;
+    }
+
+    #hh, #mm, #ss {
+        font-size: 70px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        font-family: monospace;
+    }
+
+    #analogClock {
+        width: 120px;
+        height: 120px;
+        background: #11111146;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 12px rgba(255,255,255,0.3);
+    }
+</style>
+</head>
+<body>
+
+<div id="timeContainer">
+    
+    <canvas id="analogClock" width="120" height="120"></canvas>
+
+    <div style="display:flex; flex-direction:column;">
+        <div id="timezoneText"></div>
+        <div id="dateText"></div>
+
+        <div style="display:flex; align-items:center; gap:10px; font-size:70px;">
+            <span id="hh" class="odometer">00</span>
+            <span>:</span>
+            <span id="mm" class="odometer">00</span>
+            <span>:</span>
+            <span id="ss" class="odometer">00</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* Initialize odometers using your theme */
+    const odometers = document.querySelectorAll(".odometer");
+    for (const odo of odometers) {
+        new Odometer({
+            el: odo,
+            format: "(ddd)",
+            minIntegerLen: 2,
+        });
+    }
+</script>
+
+<script src="clock.js"></script>
+
+</body>
+</html>
