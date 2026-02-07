@@ -187,3 +187,4 @@ async function fetchGameIcon(universeId) {
         if (imageUrl) document.getElementById('gameIcon').src = imageUrl;
     } catch (err) { console.error("Failed to fetch game icon:", err); }
 }
+
